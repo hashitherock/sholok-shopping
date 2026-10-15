@@ -31,7 +31,7 @@ export const categories = [
   { name: 'Vehicle Essentials', image: vacuum, label: 'Ready for the road' },
 ] as const;
 export type CategoryName = typeof categories[number]['name'];
-export type Product = { id: string; name: string; category: CategoryName; brand: string; description: string; image: string; price: number; original: number; rating: number; reviews: number; stock: number; sold: number; badge?: string; featured: boolean; trending: boolean; bestseller: boolean; variants?: string[] };
+export type Product = { id: string; name: string; category: CategoryName; brand: string; description: string; image: string; price: number; original: number; rating: number; reviews: number; stock: number; sold: number; badge?: string | undefined; featured: boolean; trending: boolean; bestseller: boolean; variants?: string[] | undefined };
 const names = [
  ['Embroidered Cotton Kurti – Sage Green','Everyday Linen Blend Kurti','Classic Embroidered Long Tunic','Relaxed Fit Cotton Kurti','Premium Festive Embroidered Kurti'],
  ['Oxford Cotton Shirt – Sky Blue','Everyday Slim Fit Oxford Shirt','Classic Long Sleeve Casual Shirt','Premium Cotton Office Shirt','Relaxed Weekend Button-down Shirt'],
@@ -49,11 +49,11 @@ const names = [
 ];
 const prices=[1290,890,349,550,1590,690,390,1190,590,299,990,650,1290];
 const brands=['Aarong','Yellow','Colourpop','Pure Care','Urban Edit','FlexFit','Little Steps','Miyako','Clean Home','Paper Studio','Pawfect','Active','AutoPro'];
-export const products: Product[] = categories.flatMap((category, ci) => names[ci].map((name, j) => ({
- id: `sh-${ci + 1}-${j + 1}`, name, category: category.name, brand: brands[ci],
+export const products: Product[] = categories.flatMap((category, ci) => (names[ci] ?? []).map((name, j) => ({
+ id: `sh-${ci + 1}-${j + 1}`, name, category: category.name, brand: brands[ci] ?? "Sholok",
  description: `Thoughtfully selected for everyday living. ${name} combines dependable quality with great value. Discover your next favourite from ${brands[ci]}.`,
  image: ci === 4 && j === 4 ? sunglasses : ci === 7 && (j === 2 || j === 4) ? pan : category.image,
- price: prices[ci] + j * 80, original: Math.round((prices[ci] + j * 80) / (0.58 + j * 0.06) / 10) * 10,
+ price: (prices[ci] ?? 500) + j * 80, original: Math.round(((prices[ci] ?? 500) + j * 80) / (0.58 + j * 0.06) / 10) * 10,
  rating: +(4.5 + (j % 3) * 0.2).toFixed(1), reviews: 128 + ci * 21 + j * 37,
  stock: j === 4 && ci === 9 ? 0 : 18 + j * 8, sold: 45 + ci * 3 + j * 7,
  badge: j === 0 ? 'Free delivery' : j === 1 ? 'New arrival' : undefined,
@@ -62,7 +62,9 @@ export const products: Product[] = categories.flatMap((category, ci) => names[ci
 })));
 export const flashProducts = [products[0],products[35],products[10],products[20],products[40],products[55]].filter((p): p is Product => Boolean(p));
 export const featuredProducts = [products[5],products[15],products[25],products[30],products[45],products[60]].filter((p): p is Product => Boolean(p));
-export const extraBeauty: Product = {...products[10], id:'sh-serum', name:'Radiance Vitamin C Face Serum – 30ml',image:serum,category:'Personal Care',price:799,original:1190,brand:'Pure Care',description:'A lightweight daily brightening facial serum for your skincare routine.',rating:4.8,reviews:342,stock:40,sold:84,featured:true,trending:true,bestseller:true};
+export const extraBeauty: Product = {id:'sh-serum', name:'Radiance Vitamin C Face Serum – 30ml',image:serum,category:'Personal Care',price:799,original:1190,brand:'Pure Care',description:'A lightweight daily brightening facial serum for your skincare routine.',rating:4.8,reviews:342,stock:40,sold:84,featured:true,trending:true,bestseller:true};
 products.push(extraBeauty);
 export const money = (amount: number) => `৳${amount.toLocaleString('en-BD')}`;
 export const discount = (p: Product) => Math.round((1-p.price/p.original)*100);
+
+export const pickProducts = (...indices: number[]): Product[] => indices.map(i => products[i]).filter((p): p is Product => Boolean(p));
