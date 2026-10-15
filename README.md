@@ -1,4 +1,4 @@
-# Sholok Foundation
+# Sholok Shopping
 
 First, focus on implementing the complete Sholok homepage and design system from the master prompt. Build the responsive header, navigation, search, hero carousel, exactly 13 approved category cards, Flash Sale, product sections, campaign banners, and footer. Establish reusable components, typography, colors, spacing, and responsive breakpoints. Do not add grocery products or extra categories. Ensure the homepage is visually polished before moving to secondary pages.
 
