@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from 'react';
 import { products, type Product } from '@/data/catalog';
-export type CartItem = {id: string; quantity: number; variant?: string};
+export type CartItem = {id: string; quantity: number; variant?: string | undefined};
 type Store = { cart: CartItem[]; wishlist: string[]; recent: string[]; searches: string[]; add: (p:Product, variant?:string)=>void; toggleWish:(id:string)=>void; quantity:(id:string,variant:string|undefined,delta:number)=>void; remove:(id:string,variant?:string)=>void; view:(id:string)=>void; saveSearch:(q:string)=>void; notice:string; notify:(s:string)=>void; cartOpen:boolean; setCartOpen:(v:boolean)=>void };
 const Context = createContext<Store | null>(null);
 export function StoreProvider({children}:{children:ReactNode}) {
@@ -8,7 +8,7 @@ export function StoreProvider({children}:{children:ReactNode}) {
  useEffect(()=>{try{const raw=localStorage.getItem('sholok-store'); if(raw){const v=JSON.parse(raw);setCart(Array.isArray(v.cart)?v.cart.filter((i:CartItem)=>products.some(p=>p.id===i.id)&&i.quantity>0):[]);setWishlist(Array.isArray(v.wishlist)?v.wishlist:[]);setRecent(Array.isArray(v.recent)?v.recent:[]);setSearches(Array.isArray(v.searches)?v.searches:[]);}}catch{} setReady(true);},[]);
  useEffect(()=>{if(ready)localStorage.setItem('sholok-store',JSON.stringify({cart,wishlist,recent,searches}));},[ready,cart,wishlist,recent,searches]);
  useEffect(()=>{if(!notice)return;const t=setTimeout(()=>setNotice(''),3000);return()=>clearTimeout(t);},[notice]);
- const add=(p:Product,variant?:string)=>{setCart(old=>{const found=old.find(i=>i.id===p.id&&i.variant===variant);if((found?.quantity??0)>=p.stock){setNotice('Available stock limit reached');return old;}return found?old.map(i=>i===found?{...i,quantity:i.quantity+1}:i):[...old,{id:p.id,quantity:1,variant}];});setNotice(`${p.name} added to your bag`);};
+ const add=(p:Product,variant?:string)=>{if(!p.stock){setNotice('This product is out of stock');return;} const existing=cart.find(i=>i.id===p.id&&i.variant===variant);if((existing?.quantity??0)>=p.stock){setNotice('Available stock limit reached');return;}setCart(old=>{const found=old.find(i=>i.id===p.id&&i.variant===variant);if((found?.quantity??0)>=p.stock){setNotice('Available stock limit reached');return old;}return found?old.map(i=>i===found?{...i,quantity:i.quantity+1}:i):[...old,{id:p.id,quantity:1,variant}];});setNotice(`${p.name} added to your bag`);};
  const toggleWish=(id:string)=>{setWishlist(v=>v.includes(id)?v.filter(i=>i!==id):[...v,id]);};
  const quantity=(id:string,variant:string|undefined,delta:number)=>setCart(v=>v.map(i=>i.id===id&&i.variant===variant?{...i,quantity:Math.max(1,Math.min(products.find(p=>p.id===id)?.stock??1,i.quantity+delta))}:i));
  return <Context.Provider value={{cart,wishlist,recent,searches,add,toggleWish,quantity,remove:(id,variant)=>setCart(v=>v.filter(i=>!(i.id===id&&i.variant===variant))),view:(id)=>setRecent(v=>[id,...v.filter(i=>i!==id)].slice(0,12)),saveSearch:(q)=>setSearches(v=>[q,...v.filter(i=>i!==q)].slice(0,5)),notice,notify:setNotice,cartOpen,setCartOpen}}>{children}{notice&&<div className="store-toast" role="status">{notice}</div>}</Context.Provider>;
