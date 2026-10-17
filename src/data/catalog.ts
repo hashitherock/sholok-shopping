@@ -68,3 +68,28 @@ export const money = (amount: number) => `৳${amount.toLocaleString('en-BD')}`;
 export const discount = (p: Product) => Math.round((1-p.price/p.original)*100);
 
 export const pickProducts = (...indices: number[]): Product[] => indices.map(i => products[i]).filter((p): p is Product => Boolean(p));
+
+// Variant options (sizes / colours / shades) shared by cards, details and cart.
+export type ColorOption = { label: string; values: string[] };
+const colorSets: Record<number, ColorOption> = {
+  0: { label: 'Colour', values: ['Sage Green', 'Dusty Rose', 'Ivory'] },
+  1: { label: 'Colour', values: ['Sky Blue', 'White', 'Navy'] },
+  2: { label: 'Shade', values: ['Coral Crush', 'Nude Rose', 'Berry'] },
+  4: { label: 'Colour', values: ['Tan', 'Black'] },
+  5: { label: 'Colour', values: ['Teal', 'Charcoal'] },
+};
+const tags = ['women dress kurti ethnic tunic', 'men shirt formal casual', 'makeup lipstick lips cosmetics', 'skincare lotion moisturiser body', 'bag handbag accessories sunglasses', 'fitness yoga exercise mat', 'baby infant bottle feeding', 'kitchen kettle pan cookware appliance', 'cleaning mop floor home', 'notebook office school study', 'pet dog cat bed', 'football sports kids play', 'car vehicle vacuum auto'];
+export type ProductOptions = { sizes?: string[]; colors?: ColorOption; keywords: string };
+export const productOptions = (p: Product): ProductOptions => {
+  const ci = Number(p.id.split('-')[1]) - 1;
+  const sizes = p.variants ?? (ci === 10 ? ['Small', 'Medium', 'Large'] : undefined);
+  const colors = ci === 4 && p.image === sunglasses ? undefined : colorSets[ci];
+  return { ...(sizes ? { sizes } : {}), ...(colors ? { colors } : {}), keywords: tags[ci] ?? 'serum skincare face vitamin glow beauty' };
+};
+export const defaultVariant = (p: Product) => { const o = productOptions(p); return [o.sizes?.[0], o.colors?.values[0]].filter(Boolean).join(' · ') || undefined; };
+export const searchProducts = (q: string, list: Product[] = products) => {
+  const words = q.toLowerCase().split(/\s+/).filter(Boolean);
+  if (!words.length) return list;
+  return list.filter((p) => { const hay = `${p.name} ${p.category} ${p.brand} ${p.description} ${productOptions(p).keywords}`.toLowerCase(); return words.every((w) => hay.includes(w)); });
+};
+export const allBrands = [...new Set(products.map((p) => p.brand))].sort();
