@@ -1,3 +1,4 @@
+import { StoreProvider } from "@/components/storefront/store-context";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import {
   Outlet,
@@ -123,7 +124,7 @@ function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
       {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
-      <Outlet />
+      <StoreProvider><Outlet /></StoreProvider>
     </QueryClientProvider>
   );
 }
