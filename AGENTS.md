@@ -14,3 +14,6 @@
 - Store mock catalog data in a browser-safe module and reuse product cards across homepage sections to keep category assignments and shopping actions consistent.
 - Use a shared React storefront context with hydration-safe localStorage for demo cart, wishlist and recent searches; this project intentionally has no backend.
 - Define all visual roles and responsive component styles in `src/styles.css`, using semantic OKLCH tokens and the shared Button for commands.
+
+- Shared DialogContent and SheetContent preserve Radix focus handling and remember state-driven openers for close-focus restoration, since storefront overlays also open without triggers.
+- Product variant selection uses Radix radio groups styled with shared Buttons, so arrow-key behavior remains accessible without custom keyboard logic.

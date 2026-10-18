@@ -74,13 +74,13 @@ function ShopPage() {
   const panel = (
     <div className="filter-panel">
       <fieldset><legend>Category</legend>
-        <button type="button" className={`filter-chip ${!validCategory ? 'is-on' : ''}`} onClick={() => update({ category: '', brands: [] })}>All categories</button>
-        {categories.map((c) => <button type="button" key={c.name} className={`filter-chip ${validCategory === c.name ? 'is-on' : ''}`} aria-pressed={validCategory === c.name} onClick={() => update({ category: c.name, brands: [] })}>{c.name}<span>{searchProducts(s.q, products.filter((p) => p.category === c.name)).length}</span></button>)}
+        <Button variant="ghost" type="button" className={`filter-chip ${!validCategory ? 'is-on' : ''}`} onClick={() => update({ category: '', brands: [] })}>All categories</Button>
+        {categories.map((c) => <Button variant="ghost" type="button" key={c.name} className={`filter-chip ${validCategory === c.name ? 'is-on' : ''}`} aria-pressed={validCategory === c.name} onClick={() => update({ category: c.name, brands: [] })}>{c.name}<span>{searchProducts(s.q, products.filter((p) => p.category === c.name)).length}</span></Button>)}
       </fieldset>
       <fieldset><legend>Price (৳)</legend>
         <div className="price-inputs"><input inputMode="numeric" aria-label="Minimum price" placeholder="Min" value={minIn} onChange={(e) => setMinIn(e.target.value.replace(/[^\d]/g, ''))} /><span>–</span><input inputMode="numeric" aria-label="Maximum price" placeholder="Max" value={maxIn} onChange={(e) => setMaxIn(e.target.value.replace(/[^\d]/g, ''))} /><Button size="sm" onClick={applyPrice}>Apply</Button></div>
         {priceError && <p className="form-error" role="alert">{priceError}</p>}
-        <div className="preset-row">{pricePresets.map(([l, mn, mx]) => <button type="button" key={l} className={`filter-pill ${s.min === mn && s.max === mx ? 'is-on' : ''}`} onClick={() => update({ min: mn, max: mx })}>{l}</button>)}</div>
+        <div className="preset-row">{pricePresets.map(([l, mn, mx]) => <Button variant="ghost" type="button" key={l} className={`filter-pill ${s.min === mn && s.max === mx ? 'is-on' : ''}`} onClick={() => update({ min: mn, max: mx })}>{l}</Button>)}</div>
       </fieldset>
       <fieldset><legend>Brand</legend>
         {brandOptions.map((b) => <label key={b} className="check-row"><input type="checkbox" checked={s.brands.includes(b)} onChange={() => update({ brands: s.brands.includes(b) ? s.brands.filter((x) => x !== b) : [...s.brands, b] })} />{b}</label>)}
@@ -101,14 +101,14 @@ function ShopPage() {
         <aside className="shop-sidebar" aria-label="Filters">{panel}</aside>
         <section>
           <div className="shop-toolbar">
-            <div><h1>{title}</h1><p>{results.length} {results.length === 1 ? 'product' : 'products'}{s.min || s.max ? ` · ${s.min ? money(s.min) : '৳0'} – ${s.max ? money(s.max) : 'any'}` : ''}</p></div>
+            <div><h1>{title}</h1><p role="status">{results.length} {results.length === 1 ? 'product' : 'products'}{s.min || s.max ? ` · ${s.min ? money(s.min) : '৳0'} – ${s.max ? money(s.max) : 'any'}` : ''}</p></div>
             <div className="toolbar-actions">
               <Button variant="outline" className="filters-button" onClick={() => setFiltersOpen(true)}><SlidersHorizontal /> Filters{active ? ` (${active})` : ''}</Button>
               <select aria-label="Sort products" value={sort} onChange={(e) => { store.setPrefs({ sort: e.target.value }); update({ sort: e.target.value }); }}>{sorts.map(([v, l]) => <option key={v} value={v}>{l}</option>)}</select>
             </div>
           </div>
           {results.length ? <div className="products-grid shop-grid">{results.map((p) => <ProductCard key={p.id} product={p} />)}</div> : (
-            <div className="empty-state"><SearchX /><h3>No products match your filters</h3><p>Try a different search term or remove a filter.</p><div className="flex gap-2 justify-center"><Button onClick={clearAll}>Clear filters</Button><Button asChild variant="outline"><Link to="/">Back to home</Link></Button></div></div>
+            <div className="empty-state"><SearchX /><h2>No products match your filters</h2><p>Try a different search term or remove a filter.</p><div className="flex gap-2 justify-center"><Button onClick={clearAll}>Clear filters</Button><Button asChild variant="outline"><Link to="/">Back to home</Link></Button></div></div>
           )}
         </section>
       </div>
