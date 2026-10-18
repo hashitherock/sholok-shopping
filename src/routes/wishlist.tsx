@@ -29,7 +29,7 @@ function WishlistPage() {
         {items.length > 0 && <div className="toolbar-actions"><Button disabled={!available.length} onClick={() => { available.forEach((p) => store.add(p, defaultVariant(p))); store.notify(`${available.length} items added to your bag`); }}><ShoppingBag /> Add all to cart</Button><Button variant="outline" onClick={store.clearWishlist}><Trash2 /> Clear</Button></div>}
       </div>
       {!store.ready ? <p className="text-muted-foreground py-10">Loading…</p> : items.length ? <div className="products-grid shop-grid">{items.map((p) => <ProductCard key={p.id} product={p} />)}</div> : (
-        <div className="empty-state"><Heart /><h3>A little room for your favourites</h3><p>Tap the heart on something you love and it will be saved here.</p><Button asChild><Link to="/shop">Discover products</Link></Button></div>
+        <div className="empty-state"><Heart /><h2>A little room for your favourites</h2><p>Tap the heart on something you love and it will be saved here.</p><Button asChild><Link to="/shop">Discover products</Link></Button></div>
       )}
     </ShopShell>
   );

@@ -36,7 +36,7 @@ function CartPage() {
     <ShopShell crumbs={[{ label: 'Shopping bag' }]}>
       <h1 className="page-title">Your shopping bag {t.items > 0 && <span>({t.items} {t.items === 1 ? 'item' : 'items'})</span>}</h1>
       {!lines.length ? (
-        <div className="empty-state"><ShoppingBag /><h3>Your bag is waiting for a little joy.</h3><p>Discover something you love.</p><Button asChild><Link to="/shop">Start shopping</Link></Button></div>
+        <div className="empty-state"><ShoppingBag /><h2>Your bag is waiting for a little joy.</h2><p>Discover something you love.</p><Button asChild><Link to="/shop">Start shopping</Link></Button></div>
       ) : (
         <div className="cart-layout">
           <ul className="cart-page-list">
@@ -75,7 +75,7 @@ function CartPage() {
               {msg && <p role={msg.ok ? 'status' : 'alert'} className={msg.ok ? 'form-success' : 'form-error'}>{msg.ok ? <Check /> : <X />}{msg.text}</p>}
             </form>
             {store.coupon && <div className={`applied-coupon ${t.couponValid ? '' : 'is-invalid'}`}><span><strong>{store.coupon}</strong>{t.couponValid ? ` · ${t.coupon?.label}` : ` · No longer eligible: minimum ${money(t.coupon?.min ?? 0)}`}</span><Button variant="ghost" size="sm" onClick={() => { store.removeCoupon(); setMsg(null); }}>Remove</Button></div>}
-            <div className="coupon-hints"><p>Demo coupons to try:</p>{coupons.filter((c) => !c.expired).map((c) => <button key={c.code} type="button" onClick={() => apply(c.code)}><strong>{c.code}</strong> {c.label}</button>)}</div>
+            <div className="coupon-hints"><p>Demo coupons to try:</p>{coupons.filter((c) => !c.expired).map((c) => <Button variant="ghost" key={c.code} type="button" onClick={() => apply(c.code)}><strong>{c.code}</strong> {c.label}</Button>)}</div>
             <dl className="summary-rows">
               <div><dt>Subtotal ({t.items} items)</dt><dd>{money(t.subtotal)}</dd></div>
               {t.discount > 0 && <div className="is-saving"><dt>Coupon discount</dt><dd>−{money(t.discount)}</dd></div>}
