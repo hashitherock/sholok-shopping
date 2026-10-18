@@ -4,7 +4,7 @@ import { Search, ShoppingBag, ShoppingCart, Heart, ChevronRight } from 'lucide-r
 import { Button } from '@/components/ui/button';
 import { useStore } from './store-context';
 
-export type Crumb = { label: string; to?: '/' | '/shop' | '/cart' | '/wishlist'; search?: Record<string, string> };
+export type Crumb = { label: string; to?: '/shop'; search?: Record<string, string> };
 
 export function ShopShell({ children, crumbs = [], initialQuery = '' }: { children: ReactNode; crumbs?: Crumb[]; initialQuery?: string }) {
   const store = useStore();
