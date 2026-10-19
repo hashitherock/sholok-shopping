@@ -1,9 +1,8 @@
 import { useEffect, useState } from 'react';
 import { createFileRoute, Link, notFound, useNavigate } from '@tanstack/react-router';
 import { Heart, Minus, Plus, ShoppingBag, Star, Truck, RotateCcw, ShieldCheck, Zap } from 'lucide-react';
-import * as RadioPrimitive from '@radix-ui/react-radio-group';
 import { type Product } from '@/data/catalog';
-import { Button } from '@/components/ui/button';
+import { Button, buttonVariants } from '@/components/ui/button';
 import { ShopShell } from '@/components/storefront/shop-shell';
 import { ProductCard } from '@/components/storefront/product-card';
 import { useStore } from '@/components/storefront/store-context';
@@ -63,8 +62,8 @@ function ProductDetails({ p }: { p: Product }) {
           <div className="rating"><Star /><span>{p.rating}</span><span className="review-count">({p.reviews} reviews) · {p.sold} sold</span></div>
           <div className="pdp-price"><strong>{money(p.price)}</strong><del>{money(p.original)}</del><span className="save-tag">Save {money(p.original - p.price)} ({discount(p)}%)</span></div>
           <p className={`stock-status ${!p.stock ? 'is-out' : p.stock <= 10 ? 'is-low' : ''}`}>{stockText}</p>
-          {opts.sizes && <div className="option-group"><p>Size: <strong>{size}</strong></p><RadioPrimitive.Root className="variant-row" aria-label="Size" value={size} onValueChange={setSize}>{opts.sizes.map((v) => <RadioPrimitive.Item key={v} value={v} asChild><Button variant="outline" className={size === v ? 'selected' : ''}>{v}</Button></RadioPrimitive.Item>)}</RadioPrimitive.Root></div>}
-          {opts.colors && <div className="option-group"><p>{opts.colors.label}: <strong>{color}</strong></p><RadioPrimitive.Root className="variant-row" aria-label={opts.colors.label} value={color} onValueChange={setColor}>{opts.colors.values.map((v) => <RadioPrimitive.Item key={v} value={v} asChild><Button variant="outline" className={color === v ? 'selected' : ''}>{v}</Button></RadioPrimitive.Item>)}</RadioPrimitive.Root></div>}
+          {opts.sizes && <div className="option-group"><p>Size: <strong>{size}</strong></p><div className="variant-row" role="radiogroup" aria-label="Size">{opts.sizes.map((v) => <label key={v} className={`variant-option ${buttonVariants({ variant: 'outline', className: size === v ? 'selected' : '' })}`}><input type="radio" name={`size-${p.id}`} value={v} checked={size === v} onChange={() => setSize(v)} />{v}</label>)}</div></div>}
+          {opts.colors && <div className="option-group"><p>{opts.colors.label}: <strong>{color}</strong></p><div className="variant-row" role="radiogroup" aria-label={opts.colors.label}>{opts.colors.values.map((v) => <label key={v} className={`variant-option ${buttonVariants({ variant: 'outline', className: color === v ? 'selected' : '' })}`}><input type="radio" name={`color-${p.id}`} value={v} checked={color === v} onChange={() => setColor(v)} />{v}</label>)}</div></div>}
           {p.stock > 0 && <div className="option-group"><p>Quantity</p><div className="quantity-row"><Button variant="outline" size="icon" aria-label="Decrease quantity" disabled={qty <= 1} onClick={() => setQty((q) => Math.max(1, q - 1))}><Minus /></Button><input aria-label="Quantity" inputMode="numeric" value={qty} onChange={(e) => { const n = parseInt(e.target.value.replace(/\D/g, ''), 10); setQty(Number.isFinite(n) ? Math.max(1, Math.min(Math.max(1, left), n)) : 1); }} /><Button variant="outline" size="icon" aria-label="Increase quantity" disabled={qty >= left} onClick={() => setQty((q) => Math.min(left, q + 1))}><Plus /></Button></div>{store.inCart(p.id) > 0 && <small className="text-muted-foreground">{store.inCart(p.id)} already in your bag · {left} more available</small>}</div>}
           <div className="pdp-actions">
             <Button disabled={!p.stock || left < 1} onClick={() => { if (store.add(p, variant, qty)) setQty(1); }}><ShoppingBag /> {left < 1 && p.stock ? 'Stock limit in bag' : 'Add to cart'}</Button>
