@@ -6,7 +6,7 @@
 - [x] Verify desktop/mobile layout and primary shopping interactions.
 
 # Responsive, accessibility and animation pass
-- [ ] Test all eight requested widths across homepage, shop, product, cart and wishlist.
-- [ ] Fix overflow, clipped controls, touch targets, focus restoration and variant keyboard navigation.
-- [ ] Add lightweight motion with reduced-motion support.
-- [ ] Retest shopping flows, storage, coupons, drawers and checkout; report verified results.
+- [x] Test all eight requested widths across homepage, shop, product, cart and wishlist.
+- [x] Fix overflow, clipped controls, touch targets, focus restoration and variant keyboard navigation.
+- [x] Add lightweight motion with reduced-motion support.
+- [x] Retest shopping flows, storage, coupons, drawers and checkout; report verified results.
